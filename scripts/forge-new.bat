@@ -4,48 +4,87 @@ setlocal EnableDelayedExpansion
 
 :: ============================================================
 :: Forge - New Project Generator
-:: Creates a new project directory with Forge rules pre-installed
-:: Usage: forge-new.bat "D:\projects\my-project" [type]
+:: Usage: forge-new.bat [project-path] [type]
+::   If no project-path given, initializes current directory.
 ::   type: full | backend | frontend | go | java | python | kotlin | ts
 :: ============================================================
 
-set "FORGE_DIR=%~dp0.."
-set "TARGET=%~1"
-set "TYPE=%~2"
+:: --- Locate Forge source (hardcoded for reliability) ---
+set "FORGE_DIR=d:\projectse\everything-cursor_V2"
 
-if "%TARGET%"=="" (
+:: Fallback: try relative to script location
+if not exist "%FORGE_DIR%\.cursor\rules" (
+    set "FORGE_DIR=%~dp0.."
+)
+
+:: Verify Forge source exists
+if not exist "%FORGE_DIR%\.cursor\rules\forge-identity.md" (
     echo.
-    echo   ========================================
-    echo     Forge - New Project Generator
-    echo   ========================================
+    echo   [ERROR] Cannot find Forge source rules.
+    echo   Searched: %FORGE_DIR%\.cursor\rules\
     echo.
-    echo   Usage: forge-new.bat ^<project-path^> [type]
-    echo.
-    echo   Types:
-    echo     full      All languages + frontend [default]
-    echo     backend   All backend languages, no frontend
-    echo     frontend  TypeScript + frontend engineering
-    echo     go        Go only
-    echo     java      Java only
-    echo     python    Python only
-    echo     kotlin    Kotlin only
-    echo     ts        TypeScript only
-    echo.
-    echo   Example:
-    echo     forge-new.bat "D:\projects\my-api" go
-    echo     forge-new.bat "D:\projects\my-app" frontend
-    echo     forge-new.bat "D:\projects\my-project"
+    echo   Fix: edit FORGE_DIR in this script to point to your Forge repo.
     echo.
     exit /b 1
 )
 
-if "%TYPE%"=="" set "TYPE=full"
+:: --- Parse arguments ---
+set "TARGET=%~1"
+set "TYPE=%~2"
 
-:: Validate target doesn't already have .cursor
-if exist "%TARGET%\.cursor\rules" (
+:: No arguments: show menu
+if "%TARGET%"=="" goto :MENU
+:: Argument is a known type (not a path): init current dir with that type
+if "%TARGET%"=="full"     ( set "TYPE=full"     & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="backend"  ( set "TYPE=backend"  & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="frontend" ( set "TYPE=frontend" & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="go"       ( set "TYPE=go"       & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="java"     ( set "TYPE=java"     & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="python"   ( set "TYPE=python"   & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="kotlin"   ( set "TYPE=kotlin"   & set "TARGET=%CD%" & goto :RUN )
+if "%TARGET%"=="ts"       ( set "TYPE=ts"       & set "TARGET=%CD%" & goto :RUN )
+:: Argument is a path
+if "%TYPE%"=="" set "TYPE=full"
+goto :RUN
+
+:MENU
+echo.
+echo   ========================================
+echo     Forge v1.2 - New Project Generator
+echo   ========================================
+echo.
+echo   Select project type:
+echo.
+echo     [1] full      All languages + frontend
+echo     [2] backend   All backend languages
+echo     [3] frontend  TypeScript + frontend
+echo     [4] go        Go only
+echo     [5] java      Java only
+echo     [6] python    Python only
+echo     [7] kotlin    Kotlin only
+echo     [8] ts        TypeScript only
+echo.
+echo   Target: %CD%
+echo.
+set /p "CHOICE=  Enter choice [1-8, default=1]: "
+if "%CHOICE%"=="" set "CHOICE=1"
+if "%CHOICE%"=="1" set "TYPE=full"
+if "%CHOICE%"=="2" set "TYPE=backend"
+if "%CHOICE%"=="3" set "TYPE=frontend"
+if "%CHOICE%"=="4" set "TYPE=go"
+if "%CHOICE%"=="5" set "TYPE=java"
+if "%CHOICE%"=="6" set "TYPE=python"
+if "%CHOICE%"=="7" set "TYPE=kotlin"
+if "%CHOICE%"=="8" set "TYPE=ts"
+set "TARGET=%CD%"
+goto :RUN
+
+:RUN
+:: Validate target doesn't already have .cursor rules
+if exist "%TARGET%\.cursor\rules\forge-identity.md" (
     echo.
-    echo   [!] %TARGET%\.cursor\rules already exists.
-    echo       Delete it first or choose a different path.
+    echo   [!] Forge rules already exist in: %TARGET%\.cursor\rules\
+    echo       Delete .cursor\rules\ first, or choose a different path.
     echo.
     exit /b 1
 )
@@ -54,13 +93,14 @@ if exist "%TARGET%\.cursor\rules" (
 if not exist "%TARGET%" mkdir "%TARGET%"
 
 echo.
-echo   Forge v1.2 - Initializing new project
+echo   Forge v1.2 - Initializing project
 echo   ======================================
+echo   Source: %FORGE_DIR%
 echo   Target: %TARGET%
 echo   Type:   %TYPE%
 echo.
 
-:: Step 1: Copy common rules (always needed)
+:: Step 1: Copy common rules + forge rules + settings
 echo   [1/4] Copying common rules...
 mkdir "%TARGET%\.cursor\rules" 2>nul
 for %%f in ("%FORGE_DIR%\.cursor\rules\common-*.md") do (
@@ -68,7 +108,9 @@ for %%f in ("%FORGE_DIR%\.cursor\rules\common-*.md") do (
 )
 copy /Y "%FORGE_DIR%\.cursor\rules\forge-identity.md" "%TARGET%\.cursor\rules\" >nul
 copy /Y "%FORGE_DIR%\.cursor\rules\forge-extensibility.md" "%TARGET%\.cursor\rules\" >nul
-copy /Y "%FORGE_DIR%\.cursor\settings.json" "%TARGET%\.cursor\" >nul
+if exist "%FORGE_DIR%\.cursor\settings.json" (
+    copy /Y "%FORGE_DIR%\.cursor\settings.json" "%TARGET%\.cursor\" >nul
+)
 
 :: Step 2: Copy language-specific rules based on type
 echo   [2/4] Copying language rules [%TYPE%]...
@@ -125,10 +167,6 @@ echo     Type:   %TYPE%
 echo     Rules:  !count! rules installed
 echo     Skills: Global (no action needed)
 echo   ========================================
-echo.
-echo   Next steps:
-echo     cd "%TARGET%"
-echo     cursor .
 echo.
 
 endlocal
