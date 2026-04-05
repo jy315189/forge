@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge — Development Rules System Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-hover: #22263a;
+    --border: #2a2e3d;
+    --text: #e4e6ed;
+    --text-muted: #8b8fa3;
+    --accent: #6366f1;
+    --accent-glow: rgba(99,102,241,0.15);
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.1);
+    --yellow: #eab308;
+    --yellow-bg: rgba(234,179,8,0.1);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.1);
+    --blue: #3b82f6;
+    --blue-bg: rgba(59,130,246,0.1);
+    --purple: #a855f7;
+    --orange: #f97316;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  .logo h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .logo h1 span { color: var(--text-muted); font-weight: 400; font-size: 16px; margin-left: 8px; }
+
+  .version-badge {
+    background: var(--accent-glow);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(99,102,241,0.3);
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .metric-card:hover { border-color: var(--accent); }
+
+  .metric-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .metric-value {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .metric-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  .status-dot.green { background: var(--green); }
+  .status-dot.yellow { background: var(--yellow); }
+  .status-dot.red { background: var(--red); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .section { margin-bottom: 32px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .section-badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  .progress-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 24px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin: 12px 0;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.8s ease;
+    position: relative;
+  }
+
+  .progress-bar-fill.safe {
+    background: linear-gradient(90deg, var(--green), #4ade80);
+  }
+
+  .progress-bar-fill.warning {
+    background: linear-gradient(90deg, var(--yellow), #facc15);
+  }
+
+  .progress-bar-fill.danger {
+    background: linear-gradient(90deg, var(--red), #f87171);
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .token-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .token-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+  }
+
+  .token-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-hover); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tag-always { background: var(--accent-glow); color: var(--accent); }
+  .tag-glob { background: var(--blue-bg); color: var(--blue); }
+  .tag-demand { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+  .tag-active { background: var(--green-bg); color: var(--green); }
+  .tag-archived { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+
+  .calor-cycle {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .calor-step {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .calor-step.done { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .calor-step.active { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(99,102,241,0.3); animation: pulse 2s infinite; }
+  .calor-step.pending { background: rgba(255,255,255,0.03); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .calor-arrow {
+    font-size: 18px;
+    color: var(--text-muted);
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 24px 24px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+
+  .timeline-item.major::before { background: var(--accent); }
+
+  .timeline-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .timeline-title { font-weight: 600; font-size: 14px; }
+  .timeline-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .calor-cycle { flex-direction: column; }
+    .calor-arrow { transform: rotate(90deg); }
+  }
+
+  .footer {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+
+  .scroll-table { overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">F</div>
+      <h1>Forge <span>Development Rules System</span></h1>
+    </div>
+    <div class="version-badge">v1.2 — 2026-04-06</div>
+  </header>
+
+  <!-- Metrics Cards -->
+  <div class="metrics">
+    <div class="metric-card">
+      <div class="metric-label">Workspace Rules</div>
+      <div class="metric-value">43</div>
+      <div class="metric-sub">11 common + 6 lang × 5 + 1 frontend + 3 forge</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">User Skills</div>
+      <div class="metric-value">22</div>
+      <div class="metric-sub">14 retained + 7 from ECC + 1 meta</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Token Budget</div>
+      <div class="metric-value" style="color:var(--green)">~6100</div>
+      <div class="metric-sub"><span class="status-dot green"></span>Within 3.05% of 200K (target ≤ 3%)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">CALOR Cycle</div>
+      <div class="metric-value" style="font-size:24px;">Round 1 ✓</div>
+      <div class="metric-sub">Next audit: Q2 2026 end (June)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Languages</div>
+      <div class="metric-value">6</div>
+      <div class="metric-sub">Go · TS/JS · Python · Kotlin · Java · Frontend</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">System Health</div>
+      <div class="metric-value" style="color:var(--green)">A</div>
+      <div class="metric-sub"><span class="status-dot green"></span>All systems operational</div>
+    </div>
+  </div>
+
+  <!-- Token Budget -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Token Budget</div>
+      <span class="section-badge badge-green">Within Budget</span>
+    </div>
+    <div class="progress-container">
+      <div class="progress-labels">
+        <span>Used: ~6,100 tokens (3.05%)</span>
+        <span>Budget: 6,000 (3%) | Red line: 10,000 (5%)</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill safe" style="width: 61%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>0</span>
+        <span style="position:relative;left:-40%">6,000 target</span>
+        <span>10,000 red line</span>
+      </div>
+      <div class="token-breakdown">
+        <div class="token-item"><div class="token-dot" style="background:var(--accent)"></div>alwaysApply Rules (10): ~2050</div>
+        <div class="token-item"><div class="token-dot" style="background:var(--green)"></div>User Skills desc (22): ~440</div>
+        <div class="token-item"><div class="token-dot" style="background:var(--blue)"></div>CE Skills desc (41): ~2000</div>
+        <div class="token-item"><div class="token-dot" style="background:var(--purple)"></div>Glob Rules (on-demand): ~800 max</div>
+        <div class="token-item"><div class="token-dot" style="background:var(--orange)"></div>System reserve: ~810</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALOR Cycle Status -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">CALOR Evolution Cycle</div>
+      <span class="section-badge badge-green">Round 1 Complete</span>
+    </div>
+    <div class="progress-container">
+      <div class="calor-cycle">
+        <div class="calor-step done">Candidate<br><small>39 rules + 584 skills evaluated</small></div>
+        <span class="calor-arrow">→</span>
+        <div class="calor-step done">Assess<br><small>Gap analysis + dedup complete</small></div>
+        <span class="calor-arrow">→</span>
+        <div class="calor-step done">Load<br><small>43 rules + 22 skills deployed</small></div>
+        <span class="calor-arrow">→</span>
+        <div class="calor-step done">Optimize<br><small>Token compressed 8000→6100</small></div>
+        <span class="calor-arrow">→</span>
+        <div class="calor-step active">Review<br><small>Quarterly audit pending (Q2)</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules Inventory -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Rules Inventory</div>
+      <span class="section-badge badge-blue">43 Active</span>
+    </div>
+    <div class="scroll-table">
+    <table>
+      <thead>
+        <tr><th>Rule</th><th>Category</th><th>Loading</th><th>Token Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>forge-identity</td><td>System</td><td><span class="tag tag-always">alwaysApply</span></td><td>~150</td></tr>
+        <tr><td>forge-extensibility</td><td>System</td><td><span class="tag tag-demand">on-demand</span></td><td>0</td></tr>
+        <tr><td>common-coding-style</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~250</td></tr>
+        <tr><td>common-git-workflow</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~200</td></tr>
+        <tr><td>common-patterns</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~250</td></tr>
+        <tr><td>common-security</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~250</td></tr>
+        <tr><td>common-testing</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~200</td></tr>
+        <tr><td>common-performance</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~150</td></tr>
+        <tr><td>common-development-workflow</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~350</td></tr>
+        <tr><td>common-documentation</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~200</td></tr>
+        <tr><td>common-error-handling</td><td>Common</td><td><span class="tag tag-always">alwaysApply</span></td><td>~200</td></tr>
+        <tr><td>common-project-init</td><td>Common</td><td><span class="tag tag-demand">on-demand</span></td><td>0</td></tr>
+        <tr><td>common-architecture</td><td>Common</td><td><span class="tag tag-demand">on-demand</span></td><td>0</td></tr>
+        <tr><td>common-design-system</td><td>Frontend</td><td><span class="tag tag-glob">glob</span></td><td>~200 *</td></tr>
+        <tr><td>common-api-design</td><td>Backend</td><td><span class="tag tag-glob">glob</span></td><td>~200 *</td></tr>
+        <tr><td>common-database</td><td>Backend</td><td><span class="tag tag-glob">glob</span></td><td>~200 *</td></tr>
+        <tr><td>common-dependency</td><td>Backend</td><td><span class="tag tag-glob">glob</span></td><td>~150 *</td></tr>
+        <tr><td>frontend-engineering</td><td>Frontend</td><td><span class="tag tag-glob">glob</span></td><td>~200 *</td></tr>
+        <tr><td colspan="4" style="color:var(--text-muted);font-style:italic">golang-* (5), typescript-* (5), python-* (5), kotlin-* (5), java-* (5) — all glob-loaded, ~150 each *</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">* glob/on-demand rules use 0 tokens at baseline; token shown is cost when activated by matching file.</p>
+  </div>
+
+  <!-- Skills & Timeline -->
+  <div class="grid-2">
+    <!-- Skills -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">User Skills</div>
+        <span class="section-badge badge-green">22 Active</span>
+      </div>
+      <table>
+        <thead><tr><th>Skill</th><th>Origin</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>api-design</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>article-writing</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>backend-patterns</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>bun-runtime</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>coding-standards</td><td>Upgraded</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>content-engine</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>documentation-lookup</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>error-handling</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>file-management</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>frontend-patterns</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>frontend-slides</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>go-backend</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>mcp-server-patterns</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>nextjs-turbopack</td><td>ECC</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>orchestrator</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>report-generation</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>security-best-practices</td><td>Upgraded</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>security-review</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>sqlite-database</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>task-tracking</td><td>Upgraded</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>tdd-workflow</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td>_evolution</td><td>Custom</td><td><span class="tag tag-active">Active</span></td></tr>
+          <tr><td colspan="3" style="color:var(--text-muted);font-style:italic">4 archived: frontend-design, project-planning, skill-creator, workflow-orchestration</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Evolution Timeline -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Evolution Timeline</div>
+      </div>
+      <div class="progress-container">
+        <div class="timeline">
+          <div class="timeline-item major">
+            <div class="timeline-date">2026-04-06</div>
+            <div class="timeline-title">Forge v1.2 — System Named</div>
+            <div class="timeline-desc">System identity "Forge" established. Java rules (5), frontend-engineering rule, Forge identity & extensibility rules, monitoring dashboard added.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2026-04-06</div>
+            <div class="timeline-title">Project Rules + Orchestrator</div>
+            <div class="timeline-desc">8 project-level rules added (init, docs, design, arch, error, API, DB, deps). Orchestrator skill created. Task routing table added to workflow.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2026-04-06</div>
+            <div class="timeline-title">ECC Source Deleted</div>
+            <div class="timeline-desc">Confirmed full integration. everything-claude-code/ directory removed (~1845 files).</div>
+          </div>
+          <div class="timeline-item major">
+            <div class="timeline-date">2026-04-05</div>
+            <div class="timeline-title">Forge v1.0 — Initial Deployment</div>
+            <div class="timeline-desc">27 rules + 21 skills deployed. ECC + CE + Custom integrated. CALOR cycle established. Token budget: ~5300. 8 .mdc rules + 10 agents archived.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2026-04-05</div>
+            <div class="timeline-title">5W1H + Clarify First</div>
+            <div class="timeline-desc">Development workflow enhanced with 5W1H analysis framework and "ask before code" principle.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2026-04-05</div>
+            <div class="timeline-title">Skills Optimization</div>
+            <div class="timeline-desc">21 skills: descriptions trimmed to ≤15 words, 5 got YAML frontmatter, 4 archived. Token saved: ~525.</div>
+          </div>
+          <div class="timeline-item major">
+            <div class="timeline-date">2026-04-05</div>
+            <div class="timeline-title">Integration Plan v1.1</div>
+            <div class="timeline-desc">Master plan created: CE + ECC + Skills deep integration with CALOR evolution strategy and 4-layer token defense.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extension Readiness -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Extension Readiness</div>
+    </div>
+    <div class="scroll-table">
+    <table>
+      <thead>
+        <tr><th>Capability</th><th>Status</th><th>How To</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Add new language rules</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Create 5 files: <code>{lang}-{aspect}.md</code> with globs → record in evolution-log</td>
+        </tr>
+        <tr>
+          <td>Add new domain skill</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Create <code>~/.cursor/skills/{domain}/SKILL.md</code> → record in evolution-log</td>
+        </tr>
+        <tr>
+          <td>Add new common rule</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Create <code>common-{topic}.md</code>, choose loading strategy → check token budget</td>
+        </tr>
+        <tr>
+          <td>Retire component</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Move to <code>_archived/</code>, rename to <code>.bak</code> → record in evolution-log</td>
+        </tr>
+        <tr>
+          <td>Migrate to new project</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Copy <code>.cursor/rules/</code> → user skills are global (no action needed)</td>
+        </tr>
+        <tr>
+          <td>Quarterly audit</td>
+          <td><span class="tag tag-active">Ready</span></td>
+          <td>Invoke <code>@_evolution</code> skill → follow CALOR Review checklist</td>
+        </tr>
+        <tr>
+          <td>Template repository</td>
+          <td><span class="section-badge badge-yellow">Pending</span></td>
+          <td>Init git → push to GitHub as template → <code>Use this template</code> for new projects</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <footer>
+    Forge Development Rules System — Built with CALOR Evolution Cycle<br>
+    Last updated: 2026-04-06 · Next audit: Q2 2026 End
+  </footer>
+
+</div>
+</body>
+</html>
