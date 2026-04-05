@@ -3,10 +3,10 @@ chcp 65001 >nul
 setlocal EnableDelayedExpansion
 
 :: ============================================================
-:: Forge — New Project Generator
+:: Forge - New Project Generator
 :: Creates a new project directory with Forge rules pre-installed
 :: Usage: forge-new.bat "D:\projects\my-project" [type]
-::   type: full | backend | frontend | go | java | python | kotlin
+::   type: full | backend | frontend | go | java | python | kotlin | ts
 :: ============================================================
 
 set "FORGE_DIR=%~dp0.."
@@ -15,14 +15,14 @@ set "TYPE=%~2"
 
 if "%TARGET%"=="" (
     echo.
-    echo   ╔══════════════════════════════════════════════════╗
-    echo   ║          Forge — New Project Generator           ║
-    echo   ╚══════════════════════════════════════════════════╝
+    echo   ========================================
+    echo     Forge - New Project Generator
+    echo   ========================================
     echo.
     echo   Usage: forge-new.bat ^<project-path^> [type]
     echo.
     echo   Types:
-    echo     full      All languages + frontend (default)
+    echo     full      All languages + frontend [default]
     echo     backend   All backend languages, no frontend
     echo     frontend  TypeScript + frontend engineering
     echo     go        Go only
@@ -54,8 +54,8 @@ if exist "%TARGET%\.cursor\rules" (
 if not exist "%TARGET%" mkdir "%TARGET%"
 
 echo.
-echo   Forge v1.2 — Initializing new project
-echo   ──────────────────────────────────────
+echo   Forge v1.2 - Initializing new project
+echo   ======================================
 echo   Target: %TARGET%
 echo   Type:   %TYPE%
 echo.
@@ -117,14 +117,14 @@ for %%f in ("%TARGET%\.cursor\rules\*.md") do set /a count+=1
 :: Step 4: Summary
 echo   [4/4] Done!
 echo.
-echo   ╔══════════════════════════════════════════════════╗
-echo   ║           Forge Project Created                  ║
-echo   ╠══════════════════════════════════════════════════╣
-echo   ║  Path:  %TARGET%
-echo   ║  Type:  %TYPE%
-echo   ║  Rules: !count! rules installed
-echo   ║  Skills: Global (no action needed)
-echo   ╚══════════════════════════════════════════════════╝
+echo   ========================================
+echo     Forge Project Created
+echo   ========================================
+echo     Path:   %TARGET%
+echo     Type:   %TYPE%
+echo     Rules:  !count! rules installed
+echo     Skills: Global (no action needed)
+echo   ========================================
 echo.
 echo   Next steps:
 echo     cd "%TARGET%"
