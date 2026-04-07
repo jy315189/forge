@@ -6,7 +6,11 @@ alwaysApply: false
 # Frontend Engineering
 
 > Supplements typescript-* rules with framework-agnostic frontend patterns.
-> For visual design (colors, typography, layout), see `common-design-system.md`.
+> Related rules (loaded automatically by glob match):
+> - `frontend-design-tokens.md` — CSS variables, color/spacing/typography token definitions
+> - `frontend-layout.md` — Page layout templates (admin, dashboard, presentation, auth, error)
+> - `frontend-components.md` — Component specs (cards, tables, forms, modals) + AI generation checklist
+> - `common-design-system.md` — Generic design system principles
 
 ## Component Architecture
 
