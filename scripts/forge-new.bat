@@ -121,7 +121,7 @@ if "%TYPE%"=="full" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\python-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
     for %%f in ("%FORGE_DIR%\.cursor\rules\kotlin-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
     for %%f in ("%FORGE_DIR%\.cursor\rules\java-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
-    for %%f in ("%FORGE_DIR%\.cursor\rules\frontend-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
+    copy /Y "%FORGE_DIR%\.cursor\rules\frontend-engineering.md" "%TARGET%\.cursor\rules\" >nul
 )
 if "%TYPE%"=="backend" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\golang-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
@@ -132,7 +132,7 @@ if "%TYPE%"=="backend" (
 )
 if "%TYPE%"=="frontend" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\typescript-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
-    for %%f in ("%FORGE_DIR%\.cursor\rules\frontend-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
+    copy /Y "%FORGE_DIR%\.cursor\rules\frontend-engineering.md" "%TARGET%\.cursor\rules\" >nul
 )
 if "%TYPE%"=="go" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\golang-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
@@ -148,7 +148,7 @@ if "%TYPE%"=="kotlin" (
 )
 if "%TYPE%"=="ts" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\typescript-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
-    for %%f in ("%FORGE_DIR%\.cursor\rules\frontend-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
+    copy /Y "%FORGE_DIR%\.cursor\rules\frontend-engineering.md" "%TARGET%\.cursor\rules\" >nul
 )
 
 :: Step 3: Count results
