@@ -463,18 +463,18 @@ If build fails:
 ### 6.3 Token 预算控制目标
 
 ```
-总目标: 常规加载 token ≤ 200K context 的 3%（约 6000 tokens）
+总目标: 常规加载 token ≤ 200K context 的 5%（约 10000 tokens）
 
 分配:
-  alwaysApply Rules (6个)     ≤ 1500 tokens   (25%)
-  Skills 描述 (21个 user)     ≤  450 tokens   (7.5%)
-  Skills 描述 (41个 CE)       ≤ 2000 tokens   (33%)
-  Glob Rules (按需 0-5个)     ≤  800 tokens   (13%)
-  系统保留                     ≤ 1250 tokens   (21.5%)
+  alwaysApply Rules (10+个)   ≤ 2500 tokens   (25%)
+  Skills 描述 (22个 user)     ≤  500 tokens   (5%)
+  Skills 描述 (41个 CE)       ≤ 2000 tokens   (20%)
+  Glob Rules (按需，含前端)    ≤ 3000 tokens   (30%)
+  系统保留                     ≤ 2000 tokens   (20%)
   ──────────────────────────────────────────────
-  合计                        ≤ 6000 tokens   (3%)
+  合计                        ≤ 10000 tokens  (5%)
 
-红线: 如果 token 占比超过 5%，必须触发瘦身审计
+红线: 如果 token 占比超过 8%，必须触发瘦身审计
 ```
 
 ### 6.4 新语言扩展流程

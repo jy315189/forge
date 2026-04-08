@@ -34,7 +34,7 @@ Frontmatter template:
   alwaysApply: false
   ---
 
-Token budget: ≤ 800 tokens for all 5 files combined.
+Token budget: ≤ 1200 tokens for all 5 files combined.
 Record in: docs/evolution-log.md
 ```
 
@@ -52,7 +52,7 @@ Token impact:
   alwaysApply = +150~250 tokens per rule (budget-sensitive!)
   globs/on-demand = +0 tokens to baseline
 
-Red line: total alwaysApply rules ≤ 12 (to keep under budget)
+Red line: total alwaysApply rules ≤ 15 (to keep under budget)
 ```
 
 ## Adding a New Skill

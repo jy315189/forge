@@ -50,7 +50,7 @@ goto :RUN
 :MENU
 echo.
 echo   ========================================
-echo     Forge v1.2 - New Project Generator
+echo     Forge v1.4 - New Project Generator
 echo   ========================================
 echo.
 echo   Select project type:
@@ -93,7 +93,7 @@ if exist "%TARGET%\.cursor\rules\forge-identity.md" (
 if not exist "%TARGET%" mkdir "%TARGET%"
 
 echo.
-echo   Forge v1.2 - Initializing project
+echo   Forge v1.4 - Initializing project
 echo   ======================================
 echo   Source: %FORGE_DIR%
 echo   Target: %TARGET%
@@ -101,7 +101,7 @@ echo   Type:   %TYPE%
 echo.
 
 :: Step 1: Copy common rules + forge rules + settings
-echo   [1/4] Copying common rules...
+echo   [1/5] Copying common rules...
 mkdir "%TARGET%\.cursor\rules" 2>nul
 for %%f in ("%FORGE_DIR%\.cursor\rules\common-*.md") do (
     copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
@@ -113,7 +113,7 @@ if exist "%FORGE_DIR%\.cursor\settings.json" (
 )
 
 :: Step 2: Copy language-specific rules based on type
-echo   [2/4] Copying language rules [%TYPE%]...
+echo   [2/5] Copying language rules [%TYPE%]...
 
 if "%TYPE%"=="full" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\golang-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
@@ -151,13 +151,30 @@ if "%TYPE%"=="ts" (
     for %%f in ("%FORGE_DIR%\.cursor\rules\frontend-*.md") do copy /Y "%%f" "%TARGET%\.cursor\rules\" >nul
 )
 
-:: Step 3: Count results
-echo   [3/4] Verifying...
+:: Step 3: Ensure user-level experience store exists
+echo   [3/5] Checking experience store...
+set "EXP_DIR=%USERPROFILE%\.cursor\experiences"
+if not exist "%EXP_DIR%" (
+    mkdir "%EXP_DIR%\build-errors" 2>nul
+    mkdir "%EXP_DIR%\logic-errors" 2>nul
+    mkdir "%EXP_DIR%\config-issues" 2>nul
+    mkdir "%EXP_DIR%\dependency-issues" 2>nul
+    mkdir "%EXP_DIR%\runtime-errors" 2>nul
+    mkdir "%EXP_DIR%\performance-issues" 2>nul
+    mkdir "%EXP_DIR%\security-issues" 2>nul
+    mkdir "%EXP_DIR%\other" 2>nul
+    echo     Created experience store: %EXP_DIR%
+) else (
+    echo     Experience store already exists.
+)
+
+:: Step 4: Count results
+echo   [4/5] Verifying...
 set count=0
 for %%f in ("%TARGET%\.cursor\rules\*.md") do set /a count+=1
 
-:: Step 4: Summary
-echo   [4/4] Done!
+:: Step 5: Summary
+echo   [5/5] Done!
 echo.
 echo   ========================================
 echo     Forge Project Created
@@ -166,6 +183,7 @@ echo     Path:   %TARGET%
 echo     Type:   %TYPE%
 echo     Rules:  !count! rules installed
 echo     Skills: Global (no action needed)
+echo     Exps:   %USERPROFILE%\.cursor\experiences\
 echo   ========================================
 echo.
 

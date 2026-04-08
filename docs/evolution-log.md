@@ -68,6 +68,16 @@
 | 2026-04-06 | 新增 | rule | forge-identity | CUSTOM | 系统身份：名称、版本、组成、扩展协议 | +150 (alwaysApply) |
 | 2026-04-06 | 新增 | rule | forge-extensibility | CUSTOM | 扩展框架：模板、版本管理、迁移、退役流程 | +0 (on-demand) |
 | 2026-04-06 | 新增 | 方案 | forge-dashboard.html | CUSTOM | 可视化监控仪表盘：规则/技能清单、Token预算、CALOR状态、时间线 | = 无变化 |
+| 2026-04-08 | 新增 | rule | frontend-design-tokens | CUSTOM | 前端设计令牌：颜色、排版、间距、阴影等 CSS 变量定义 | +0 (glob) |
+| 2026-04-08 | 优化 | 方案 | Token 预算调整 | CUSTOM | 预算上限 6000→10000 (3%→5%)，红线 5%→8%，alwaysApply 上限 12→15 | = 无变化 |
+| 2026-04-08 | 升级 | 方案 | Forge v1.3 | CUSTOM | 适配前端规则体系扩展，放宽 token 预算 | = 无变化 |
+| 2026-04-08 | 新增 | 方案 | Experience Store | CUSTOM | 全局经验库：~/.cursor/experiences/ 目录结构，8 个分类 | = 无变化 |
+| 2026-04-08 | 新增 | skill | experience-system | CUSTOM | 经验记录与查询 skill，半自动触发，双通道消费 | +20 |
+| 2026-04-08 | 优化 | rule | common-development-workflow | CUSTOM | Bug Fix/Build Error 流程嵌入经验库查阅+记录；新增选项式提问规则 | = 无变化 |
+| 2026-04-08 | 升级 | 方案 | Forge v1.4 | CUSTOM | 新增 Experience Store 层，系统公式增加 Experiences 组件 | = 无变化 |
+| 2026-04-08 | 新增 | rule | forge-scripts-audit | CUSTOM | 规则变更时强制审查 scripts/ 脚本同步性 | +0 (glob) |
+| 2026-04-08 | 升级 | 方案 | forge-new.bat v1.4 | CUSTOM | 版本号同步，新增 Experience Store 目录创建步骤 | = 无变化 |
+| 2026-04-08 | 升级 | 方案 | forge-sync.bat v1.4 | CUSTOM | 新增 Experience Store 分类目录同步，补全缺失分类 | = 无变化 |
 | | | | | | | |
 
 ---
@@ -79,4 +89,7 @@
 | Q2 2026 | 2026-04-05 | 27 | 21 | ~5300 | 已部署 | Phase 1-2 全部完成 |
 | Q2 2026 | 2026-04-06 | 35 | 22 | ~5870 | 已部署 | +8 项目级规则 +orchestrator skill，ECC 整合完毕 |
 | Q2 2026 | 2026-04-06 | 43 | 22 | ~6100 | **Forge v1.2** | +Java(5) +前端工程(1) +Forge身份(2) +Dashboard，系统命名 |
+| Q2 2026 | 2026-04-08 | 44 | 22 | ~6100 | **Forge v1.3** | +前端设计令牌(1)，Token 预算放宽至 10000 (5%) |
+| Q2 2026 | 2026-04-08 | 44 | 23 | ~6120 | **Forge v1.4** | +Experience Store + experience-system skill，工作流嵌入经验闭环 |
+| Q2 2026 | 2026-04-08 | 45 | 23 | ~6120 | **Forge v1.4** | +forge-scripts-audit 规则，脚本 v1.4 同步完成 |
 | | | | | | | |

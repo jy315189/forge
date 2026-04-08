@@ -9,7 +9,7 @@ alwaysApply: true
 ## System Composition
 
 ```
-Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎) + CALOR (进化循环)
+Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎) + CALOR (进化循环) + Experiences (经验库)
 ```
 
 | Layer | Component | Count | Scope |
@@ -19,11 +19,12 @@ Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎) + CA
 | 2 | Workspace Rules (`.cursor/rules/`) | dynamic | Project |
 | 3 | User Skills (`~/.cursor/skills/`) | dynamic | Global |
 | 4 | Extension Framework (CALOR) | — | Meta |
+| 5 | Experience Store (`~/.cursor/experiences/`) | dynamic | Global |
 
 ## Current Version
 
-- **Forge v1.2** | Updated: 2026-04-06
-- Token budget: ≤ 6000 tokens (3% of 200K context)
+- **Forge v1.4** | Updated: 2026-04-08
+- Token budget: ≤ 10000 tokens (5% of 200K context)
 - Evolution log: `docs/evolution-log.md`
 - Dashboard: `docs/forge-dashboard.html`
 
@@ -40,5 +41,7 @@ To add new rules or skills to Forge:
 
 - Add language: create 5 files `{lang}-{coding-style|patterns|security|testing|hooks}.md`
 - Add domain skill: create `~/.cursor/skills/{domain}/SKILL.md`
+- Record experience: `@experience-system` or auto-prompted after fixing errors
+- Query experiences: search `~/.cursor/experiences/` by keyword/category
 - Run audit: invoke `@_evolution` skill
 - Monitor status: open `docs/forge-dashboard.html`

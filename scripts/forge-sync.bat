@@ -16,7 +16,7 @@ set "FORCE=%~1"
 
 echo.
 echo   ========================================
-echo     Forge - Skills Sync
+echo     Forge v1.4 - Skills ^& Experiences Sync
 echo   ========================================
 echo.
 
@@ -64,16 +64,42 @@ for /d %%d in ("%SKILLS_SOURCE%\*") do (
     )
 )
 
+:: --- Experience Store Setup ---
+echo.
+echo   Checking experience store...
+set "EXP_DIR=%USERPROFILE%\.cursor\experiences"
+set exp_created=0
+if not exist "%EXP_DIR%" (
+    for %%c in (build-errors logic-errors config-issues dependency-issues runtime-errors performance-issues security-issues other) do (
+        mkdir "%EXP_DIR%\%%c" 2>nul
+    )
+    echo   [Created]   Experience store: %EXP_DIR%
+    set exp_created=1
+) else (
+    :: Ensure all category directories exist
+    for %%c in (build-errors logic-errors config-issues dependency-issues runtime-errors performance-issues security-issues other) do (
+        if not exist "%EXP_DIR%\%%c" (
+            mkdir "%EXP_DIR%\%%c" 2>nul
+            echo   [Created]   %EXP_DIR%\%%c
+            set /a exp_created+=1
+        )
+    )
+    if !exp_created!==0 (
+        echo   [OK]        Experience store already complete.
+    )
+)
+
 echo.
 echo   ========================================
 echo     Sync Complete
 echo   ========================================
-echo     Synced:  !synced! skills
-echo     Skipped: !skipped! skills
-echo     Target:  %SKILLS_TARGET%
+echo     Skills synced:  !synced!
+echo     Skills skipped: !skipped!
+echo     Skills target:  %SKILLS_TARGET%
+echo     Experiences:    %EXP_DIR%
 echo   ========================================
 echo.
-echo   Skills are now globally available in all Cursor projects.
+echo   Skills and experiences are now globally available.
 echo.
 
 endlocal

@@ -20,6 +20,13 @@ alwaysApply: true
 - Multiple valid approaches → ASK with trade-off summary ("方案 A 更快但不灵活，方案 B 更灵活但复杂，你倾向哪个？")
 - Pure implementation detail → PROCEED (the user trusts your judgment on how)
 
+**Question format — Options over open-ended:**
+- **ALWAYS present questions as selectable options** (use AskQuestion tool with structured choices), NEVER ask open-ended questions that require the user to type answers
+- Each question must provide ≥2 concrete options with brief trade-off descriptions
+- Use `allow_multiple: true` when options are not mutually exclusive
+- If none of the options fit, include a "其他（请说明）" escape hatch option
+- Group related questions into a single AskQuestion call for efficiency
+
 ## 5W1H Requirement Analysis
 
 Before starting any non-trivial feature, clarify through 5W1H:
@@ -40,8 +47,8 @@ Not every dimension needs exhaustive answers. Focus on the ones that are **uncle
 | Task Type | Signals | Workflow |
 |-----------|---------|----------|
 | **New Feature** | "实现", "添加", "创建", "开发" | 5W1H → Plan → TDD → Review → Ship |
-| **Bug Fix** | "修复", "bug", "报错", "不工作" | Reproduce with test → Fix → Verify |
-| **Build Error** | 编译错误, 类型错误, 依赖问题 | Diagnose → Fix → Verify build |
+| **Bug Fix** | "修复", "bug", "报错", "不工作" | **查阅经验库** → Reproduce → Fix → Verify → **提议记录经验** |
+| **Build Error** | 编译错误, 类型错误, 依赖问题 | **查阅经验库** → Diagnose → Fix → Verify → **提议记录经验** |
 | **Code Review** | "检查", "审查", "review" | ce:review (multi-perspective) |
 | **Security** | "安全", "漏洞", "审计" | ce:review (security focus) |
 | **Refactoring** | "重构", "清理", "优化结构" | Ensure tests → Refactor → Review |
@@ -75,3 +82,11 @@ For complex multi-phase tasks, use `@orchestrator` skill for structured executio
 5. **Ship** (git-commit-push-pr)
    - Create PR with comprehensive description
    - Include test plan and monitoring notes
+
+## Experience System Integration — 经验库闭环
+
+**修复前查阅**: Bug Fix / Build Error 工作流启动时，先搜索 `~/.cursor/experiences/` 中的相关经验。用关键词（错误信息、语言、框架）在经验库中 Grep 匹配，有命中则展示教训再动手。
+
+**修复后提议**: 成功修复错误后，**必须**用 AskQuestion 工具提议记录经验（"是，记录" / "不需要"）。用户确认后按 `@experience-system` skill 模板写入对应分类目录。
+
+**不记录的情况**: 纯 typo 修复、import 顺序调整等无教训价值的琐碎修改，不提议记录。
