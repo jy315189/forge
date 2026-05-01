@@ -9,7 +9,8 @@ alwaysApply: true
 ## System Composition
 
 ```
-Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎) + CALOR (进化循环) + Experiences (经验库)
+Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎)
+      + CALOR (进化循环) + Experiences (经验库) + LLM-Behavior (行为约束)
 ```
 
 | Layer | Component | Count | Scope |
@@ -23,7 +24,7 @@ Forge = Rules (编码约束) + Skills (领域知识) + CE (工作流引擎) + CA
 
 ## Current Version
 
-- **Forge v1.4** | Updated: 2026-04-08
+- **Forge v1.5** | Updated: 2026-05-01
 - Token budget: ≤ 10000 tokens (5% of 200K context)
 - Evolution log: `docs/evolution-log.md`
 - Dashboard: `docs/forge-dashboard.html`

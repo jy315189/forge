@@ -40,6 +40,7 @@
 | `common-development-workflow` | alwaysApply | 5W1H analysis, task routing, CE pipeline |
 | `common-documentation` | alwaysApply | Comments, README, API docs, changelog |
 | `common-error-handling` | alwaysApply | Error classification, logging, recovery |
+| `common-llm-behavior` | alwaysApply | Karpathy guidelines: surgical changes, simplicity, goal-driven |
 | `common-project-init` | on-demand | Project bootstrapping checklist |
 | `common-architecture` | on-demand | Layered architecture, module boundaries |
 | `common-design-system` | glob | UI/UX: layout, color, typography, a11y |
@@ -189,15 +190,24 @@ Always update `docs/evolution-log.md` after adding, modifying, or retiring compo
 
 ## Version
 
-**Forge v1.2** — 2026-04-06
+**Forge v1.5** — 2026-05-01
 
 | Metric | Value |
 |--------|-------|
-| Rules | 43 |
-| Skills | 22 |
+| Rules | 46 |
+| Skills | 23 |
 | Languages | 6 |
-| Token Budget | ~6100 (~3.05%) |
+| Token Budget | ~6420 (~3.21%) |
 | CALOR Round | 1 complete |
+
+### Version History
+
+| Version | Date | Highlight |
+|---------|------|-----------|
+| v1.2 | 2026-04-06 | System named Forge, +Java(5) +Frontend(1) +identity(2) +Dashboard |
+| v1.3 | 2026-04-08 | +frontend-design-tokens, token budget raised to 10000 (5%) |
+| v1.4 | 2026-04-08 | +Experience Store layer, experience loop in workflow |
+| v1.5 | 2026-05-01 | +common-llm-behavior (Karpathy), LLM-Behavior layer added |
 
 ---
 

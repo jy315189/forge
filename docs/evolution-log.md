@@ -8,7 +8,7 @@
 
 - **操作类型**: 初始化 / 新增 / 升级 / 退役 / 同步 / 优化 / 审计
 - **组件类型**: rule / skill / plugin / 方案
-- **来源标记**: ECC = Everything Claude Code, CE = Compound Engineering, CUSTOM = 自定义
+- **来源标记**: ECC = Everything Claude Code, CE = Compound Engineering, CUSTOM = 自定义, KARPATHY = forrestchang/andrej-karpathy-skills (Karpathy 行为指南)
 - **Token 影响**: 标注对常规加载 token 预算的影响（+ 增加 / - 减少 / = 无变化）
 
 ---
@@ -78,6 +78,9 @@
 | 2026-04-08 | 新增 | rule | forge-scripts-audit | CUSTOM | 规则变更时强制审查 scripts/ 脚本同步性 | +0 (glob) |
 | 2026-04-08 | 升级 | 方案 | forge-new.bat v1.4 | CUSTOM | 版本号同步，新增 Experience Store 目录创建步骤 | = 无变化 |
 | 2026-04-08 | 升级 | 方案 | forge-sync.bat v1.4 | CUSTOM | 新增 Experience Store 分类目录同步，补全缺失分类 | = 无变化 |
+| 2026-05-01 | 新增 | 方案 | external/andrej-karpathy-skills/ | KARPATHY | 上游项目本地只读镜像（CLAUDE.md/.cursor 规则/Skill/插件清单），存档与可追溯出处 | = 无变化 |
+| 2026-05-01 | 新增 | rule | common-llm-behavior | KARPATHY | 引入 Karpathy 三条行为约束：精准修改 / 简洁优先 / 目标驱动；填补 Forge 行为层盲区 | +300 (alwaysApply) |
+| 2026-05-01 | 升级 | 方案 | Forge v1.5 | KARPATHY+CUSTOM | 系统公式新增 LLM-Behavior 层，identity 同步至 v1.5 | = 无变化 |
 | | | | | | | |
 
 ---
@@ -92,4 +95,5 @@
 | Q2 2026 | 2026-04-08 | 44 | 22 | ~6100 | **Forge v1.3** | +前端设计令牌(1)，Token 预算放宽至 10000 (5%) |
 | Q2 2026 | 2026-04-08 | 44 | 23 | ~6120 | **Forge v1.4** | +Experience Store + experience-system skill，工作流嵌入经验闭环 |
 | Q2 2026 | 2026-04-08 | 45 | 23 | ~6120 | **Forge v1.4** | +forge-scripts-audit 规则，脚本 v1.4 同步完成 |
+| Q2 2026 | 2026-05-01 | 46 | 23 | ~6420 | **Forge v1.5** | +common-llm-behavior（Karpathy 行为三件套），系统公式新增 LLM-Behavior 层 |
 | | | | | | | |
